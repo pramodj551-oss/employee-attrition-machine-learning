@@ -1,0 +1,89 @@
+# ==========================================================
+# Employee Attrition Machine Learning
+# .gitignore
+# ==========================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Environment Variables
+.env
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Python Logs
+*.log
+
+# SQLite Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Trained Models
+models/*.pkl
+models/*.joblib
+
+# Processed Data
+data/processed/*
+!data/processed/.gitkeep
+
+# Model Storage
+data/models/*
+!data/models/.gitkeep
+
+# Output Charts
+outputs/charts/*
+!outputs/charts/.gitkeep
+
+# Output Metrics
+outputs/metrics/*
+!outputs/metrics/.gitkeep
+
+# Output Reports
+outputs/reports/*
+!outputs/reports/.gitkeep
+
+# Test Cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Distribution Files
+build/
+dist/
+*.egg-info/
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+
+# Editor Backup Files
+*~
+*.swp
+*.swo
+
+# Python Version
+.python-version
