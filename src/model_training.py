@@ -114,9 +114,11 @@ class ModelTrainer:
 
 if __name__ == "__main__":
     from src.data_loader import load_data
-    from src.preprocessing import DataPreprocessor
-    from src.feature_engineering import FeatureEngineer
 
+    dataframe = load_data()
+    processor = DataPreprocessor(dataframe)
+    cleaned_df = processor.process()
+    print(cleaned_df.head())
     df = load_data()
     processor = DataPreprocessor(df)
     clean_df = processor.process()
