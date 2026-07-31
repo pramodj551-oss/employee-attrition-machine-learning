@@ -11,19 +11,18 @@ Author : Pramod Prakash Jadhav
 from pathlib import Path
 
 # ==========================================================
-# Project Root Directory
+# Project Root
 # ==========================================================
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 # ==========================================================
 # Data Directories
 # ==========================================================
 
-DATA_DIR = ROOT_DIR / "data"
+DATA_DIR = PROJECT_ROOT / "data"
 
 RAW_DATA_DIR = DATA_DIR / "raw"
-
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 
 # ==========================================================
@@ -33,54 +32,68 @@ PROCESSED_DATA_DIR = DATA_DIR / "processed"
 DATASET_PATH = RAW_DATA_DIR / "employee_attrition.csv"
 
 # ==========================================================
-# Output Directories
+# Model Directories
 # ==========================================================
 
-OUTPUT_DIR = ROOT_DIR / "outputs"
+MODELS_DIR = PROJECT_ROOT / "models"
 
-CHARTS_DIR = OUTPUT_DIR / "charts"
+MODEL_PATH = MODELS_DIR / "best_model.pkl"
+
+PIPELINE_PATH = MODELS_DIR / "pipeline.pkl"
+
+FEATURE_COLUMNS_PATH = MODELS_DIR / "feature_columns.pkl"
+
+SCALER_PATH = MODELS_DIR / "scaler.pkl"
+
+LABEL_ENCODER_PATH = MODELS_DIR / "label_encoder.pkl"
+
+# ==========================================================
+# Outputs
+# ==========================================================
+
+OUTPUT_DIR = PROJECT_ROOT / "outputs"
 
 REPORTS_DIR = OUTPUT_DIR / "reports"
 
-METRICS_DIR = OUTPUT_DIR / "metrics"
-
 LOGS_DIR = OUTPUT_DIR / "logs"
 
-# ==========================================================
-# Model Directory
-# ==========================================================
-
-MODEL_DIR = ROOT_DIR / "models"
-
-MODEL_PATH = MODEL_DIR / "best_model.pkl"
+PREDICTIONS_DIR = OUTPUT_DIR / "predictions"
 
 # ==========================================================
-# Machine Learning Configuration
+# Reports
 # ==========================================================
 
-TARGET_COLUMN = "Attrition"
+CLASSIFICATION_REPORT_PATH = (
+    REPORTS_DIR / "classification_report.txt"
+)
 
-TEST_SIZE = 0.20
+CONFUSION_MATRIX_PATH = (
+    REPORTS_DIR / "confusion_matrix.png"
+)
+
+FEATURE_IMPORTANCE_PATH = (
+    REPORTS_DIR / "feature_importance.csv"
+)
+
+PREDICTIONS_PATH = (
+    PREDICTIONS_DIR / "predictions.csv"
+)
+
+# ==========================================================
+# Random State
+# ==========================================================
 
 RANDOM_STATE = 42
 
+TEST_SIZE = 0.20
+
 # ==========================================================
-# Model Names
+# Logging
 # ==========================================================
 
-MODEL_NAMES = [
+LOG_LEVEL = "INFO"
 
-    "Logistic Regression",
-
-    "Decision Tree",
-
-    "Random Forest",
-
-    "Gradient Boosting",
-
-    "K-Nearest Neighbors"
-
-]
+LOG_FILE = LOGS_DIR / "application.log"
 
 # ==========================================================
 # Create Required Directories
@@ -88,20 +101,25 @@ MODEL_NAMES = [
 
 DIRECTORIES = [
 
+    RAW_DATA_DIR,
+
     PROCESSED_DATA_DIR,
 
-    CHARTS_DIR,
+    MODELS_DIR,
+
+    OUTPUT_DIR,
 
     REPORTS_DIR,
 
-    METRICS_DIR,
-
     LOGS_DIR,
 
-    MODEL_DIR
+    PREDICTIONS_DIR,
 
 ]
 
 for directory in DIRECTORIES:
 
-    directory.mkdir(parents=True, exist_ok=True)
+    directory.mkdir(
+        parents=True,
+        exist_ok=True,
+)
