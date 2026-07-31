@@ -75,7 +75,8 @@ class ModelTrainer:
     y_train,
     scaler=None,
     label_encoder=None,
-):
+    feature_engineer=None,
+): 
 
         logger.info("=" * 60)
         logger.info("Training Machine Learning Models")
@@ -93,11 +94,16 @@ class ModelTrainer:
 
             model.fit(X_train, y_train)
 
-            train_prediction = model.predict(X_train)
+            test_prediction = model.predict(X_test)
 
-            train_accuracy = accuracy_score(
-                y_train,
-                train_prediction
+test_accuracy = accuracy_score(
+    y_test,
+    test_prediction
+)
+
+logger.info(
+    f"{model_name} Test Accuracy : "
+    f"{test_accuracy:.4f}"
             )
 
             logger.info(
@@ -105,9 +111,9 @@ class ModelTrainer:
                 f"{train_accuracy:.4f}"
             )
 
-            if train_accuracy > best_score:
+            if test_accuracy > best_score:
 
-                best_score = train_accuracy
+                best_score = test_accuracy
 
                 best_model = model
 
