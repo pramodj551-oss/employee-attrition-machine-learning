@@ -170,6 +170,31 @@ if label_encoder is not None:
         logger.info(
             f"Best model saved to : {MODEL_PATH}"
         )
+import joblib
+from src.config import (
+    FEATURE_COLUMNS_PATH,
+    SCALER_PATH,
+    LABEL_ENCODER_PATH,
+)
+
+if feature_engineer is not None:
+
+    joblib.dump(
+        feature_engineer.feature_columns,
+        FEATURE_COLUMNS_PATH,
+    )
+
+    joblib.dump(
+        feature_engineer.scaler,
+        SCALER_PATH,
+    )
+
+    joblib.dump(
+        feature_engineer.label_encoder,
+        LABEL_ENCODER_PATH,
+    )
+
+    logger.info("Preprocessing artifacts saved successfully.")
 
         return best_model
 
@@ -192,7 +217,12 @@ if __name__ == "__main__":
 
     trainer = ModelTrainer()
 
-    trainer.train(
-        X_train,
-        y_train
-  )
+    model = trainer.train(
+    X_train,
+    X_test,
+    y_train,
+    y_test,
+    scaler=scaler,
+    label_encoder=label_encoder,
+    feature_engineer=engineer,  
+)
