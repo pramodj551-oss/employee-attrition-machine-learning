@@ -101,7 +101,9 @@ employee-attrition-machine-learning/
 │
 ├── models/
 │   └── best_model.pkl
-│
+│   ├── feature_columns.pkl
+│   ├── scaler.pkl
+│   └── label_encoder.pkl
 ├── tests/
 │
 ├── requirements.txt
