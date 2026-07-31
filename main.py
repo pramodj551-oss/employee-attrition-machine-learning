@@ -61,6 +61,12 @@ def main():
         logger.info("Training Machine Learning models...")
 
         trainer = ModelTrainer()
+        trainer.train(
+    X_train,
+    y_train,
+    scaler=processor.scaler,
+    label_encoder=processor.label_encoder,
+        )
 
         best_model = trainer.train(
             X_train,
