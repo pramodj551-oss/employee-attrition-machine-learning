@@ -1,11 +1,9 @@
 """
-==========================================================
 Employee Attrition Machine Learning
 
 feature_engineering.py
 
 Author : Pramod Prakash Jadhav
-==========================================================
 """
 
 import pandas as pd
@@ -29,17 +27,11 @@ class FeatureEngineer:
     """
 
     def __init__(self, dataframe: pd.DataFrame):
-
         self.df = dataframe.copy()
-
         self.scaler = StandardScaler()
-
         self.label_encoder = LabelEncoder()
-
         self.feature_columns = []
-
         self.numeric_columns = []
-
         self.categorical_columns = []
 
     # ======================================================
@@ -47,161 +39,118 @@ class FeatureEngineer:
     # ======================================================
 
     def encode_target(self):
+        logger.info("Encoding target variable...")
 
-    logger.info("Encoding target variable...")
-
-    self.df[TARGET_COLUMN] = (
-        self.label_encoder.fit_transform(
-            self.df[TARGET_COLUMN]
+        self.df[TARGET_COLUMN] = (
+            self.label_encoder.fit_transform(
+                self.df[TARGET_COLUMN]
+            )
         )
-    )
 
     # ======================================================
     # Encode Categorical Features
     # ======================================================
 
     def encode_features(self):
+        logger.info("Encoding categorical features...")
 
-    logger.info("Encoding categorical features...")
-
-    self.categorical_columns = (
-        self.df.select_dtypes(
-            include=["object"]
-        )
-        .columns
-        .tolist()
-    )
-
-    if TARGET_COLUMN in self.categorical_columns:
-
-        self.categorical_columns.remove(
-            TARGET_COLUMN
+        self.categorical_columns = (
+            self.df.select_dtypes(
+                include=["object"]
+            )
+            .columns
+            .tolist()
         )
 
-    self.df = pd.get_dummies(
+        if TARGET_COLUMN in self.categorical_columns:
+            self.categorical_columns.remove(
+                TARGET_COLUMN
+            )
 
-        self.df,
+        self.df = pd.get_dummies(
+            self.df,
+            columns=self.categorical_columns,
+            drop_first=True
+        )
 
-        columns=self.categorical_columns,
+        self.feature_columns = [
+            column
+            for column in self.df.columns
+            if column != TARGET_COLUMN
+        ]
 
-        drop_first=True
-
-    )
-
-    self.feature_columns = [
-
-        column
-
-        for column in self.df.columns
-
-        if column != TARGET_COLUMN
-
-    ]
-
-    self.numeric_columns = self.feature_columns.copy()
+        self.numeric_columns = self.feature_columns.copy()
 
     # ======================================================
     # Split Features & Target
     # ======================================================
 
     def split_features_target(self):
+        X = self.df[
+            self.feature_columns
+        ].copy()
 
-    X = self.df[
-        self.feature_columns
-    ].copy()
+        y = self.df[
+            TARGET_COLUMN
+        ].copy()
 
-    y = self.df[
-        TARGET_COLUMN
-    ].copy()
-
-    return X, y
+        return X, y
 
     # ======================================================
     # Train Test Split
     # ======================================================
 
     def train_test(self, X, y):
-
         logger.info("Splitting dataset...")
 
         return train_test_split(
-
             X,
-
             y,
-
             test_size=TEST_SIZE,
-
             random_state=RANDOM_STATE,
-
             stratify=y
-
         )
 
     # ======================================================
     # Feature Scaling
     # ======================================================
 
-    def scale_features(
+    def scale_features(self, X_train, X_test):
+        logger.info("Scaling features...")
 
-    self,
+        X_train_scaled = pd.DataFrame(
+            self.scaler.fit_transform(
+                X_train
+            ),
+            columns=X_train.columns,
+            index=X_train.index
+        )
 
-    X_train,
+        X_test_scaled = pd.DataFrame(
+            self.scaler.transform(
+                X_test
+            ),
+            columns=X_test.columns,
+            index=X_test.index
+        )
 
-    X_test
-
-):
-
-    logger.info("Scaling features...")
-
-    X_train_scaled = pd.DataFrame(
-
-        self.scaler.fit_transform(
-            X_train
-        ),
-
-        columns=X_train.columns,
-
-        index=X_train.index
-
-    )
-
-    X_test_scaled = pd.DataFrame(
-
-        self.scaler.transform(
-            X_test
-        ),
-
-        columns=X_test.columns,
-
-        index=X_test.index
-
-    )
-
-    return (
-
-        X_train_scaled,
-
-        X_test_scaled
-
-    )
+        return (
+            X_train_scaled,
+            X_test_scaled
+        )
 
     # ======================================================
     # Complete Pipeline
     # ======================================================
 
     def prepare_data(self):
-
         logger.info("=" * 60)
-
         logger.info(
             "Starting Feature Engineering..."
         )
-
         logger.info("=" * 60)
 
         self.encode_target()
-
         self.encode_features()
 
         X, y = self.split_features_target()
@@ -219,48 +168,35 @@ class FeatureEngineer:
         logger.info(
             "Feature engineering completed successfully."
         )
-
         logger.info(
             f"Training Samples : {X_train.shape[0]}"
         )
-
         logger.info(
             f"Testing Samples : {X_test.shape[0]}"
         )
-
         logger.info(
             f"Number of Features : {X_train.shape[1]}"
         )
 
         return (
-
             X_train,
-
             X_test,
-
             y_train,
-
             y_test
-
         )
 
 
 if __name__ == "__main__":
-
     from src.data_loader import load_data
     from src.preprocessing import DataPreprocessor
 
     df = load_data()
 
     processor = DataPreprocessor(df)
-
     clean_df = processor.process()
 
     engineer = FeatureEngineer(clean_df)
-
     X_train, X_test, y_train, y_test = engineer.prepare_data()
 
     print("Training Shape :", X_train.shape)
-
     print("Testing Shape :", X_test.shape)
-  
