@@ -13,7 +13,7 @@ from src.preprocessing import DataPreprocessor
 from src.feature_engineering import FeatureEngineer
 from src.model_training import ModelTrainer
 from src.evaluation import ModelEvaluator
-from src.prediction import Predictor
+from src.logger import get_logger
 
 
 def main():
@@ -21,9 +21,9 @@ def main():
     logger = get_logger()
 
     logger.info("=" * 60)
-    logger.info("Employee Attrition Machine Learning Started")
+    logger.info("Employee Attrition ML Pipeline Started")
     logger.info("=" * 60)
-
+    
     try:
 
         # ---------------------------------------------
@@ -31,7 +31,7 @@ def main():
         # ---------------------------------------------
         logger.info("Loading dataset...")
 
-        df = load_data()
+            df = load_data()
 
         logger.info(f"Dataset Shape : {df.shape}")
 
@@ -62,10 +62,13 @@ def main():
 
         trainer = ModelTrainer()
         trainer.train(
-    X_train,
-    y_train,
-    scaler=processor.scaler,
-    label_encoder=processor.label_encoder,
+        X_train,
+        X_test,
+        y_train,
+        y_test,
+        feature_engineer=engineer,
+        scaler=processor.scaler,
+        label_encoder=processor.label_encoder,
         )
 
         best_model = trainer.train(
