@@ -10,7 +10,16 @@ Author : Pramod Prakash Jadhav
 
 from pathlib import Path
 
+import joblib
 import pandas as pd
+
+from src.config import (
+    MODEL_PATH,
+    FEATURE_COLUMNS_PATH,
+    SCALER_PATH,
+    LABEL_ENCODER_PATH,
+)
+from src.logger import get_logger
 
 from src.config import MODEL_PATH, REPORTS_DIR
 from src.logger import get_logger
@@ -35,7 +44,19 @@ class Predictor:
 
             logger.info("Loading trained model...")
 
-            self.model = load_model(MODEL_PATH)
+            self.model = joblib.load(MODEL_PATH)
+
+self.feature_columns = joblib.load(
+    FEATURE_COLUMNS_PATH
+)
+
+self.scaler = joblib.load(
+    SCALER_PATH
+)
+
+self.label_encoder = joblib.load(
+    LABEL_ENCODER_PATH
+)
 
         else:
 
