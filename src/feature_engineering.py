@@ -34,19 +34,27 @@ class FeatureEngineer:
 
         self.scaler = StandardScaler()
 
+        self.label_encoder = LabelEncoder()
+
+        self.feature_columns = []
+
+        self.numeric_columns = []
+
+        self.categorical_columns = []
+
     # ======================================================
     # Encode Target Variable
     # ======================================================
 
     def encode_target(self):
 
-        logger.info("Encoding target variable...")
+    logger.info("Encoding target variable...")
 
-        encoder = LabelEncoder()
-
-        self.df[TARGET_COLUMN] = encoder.fit_transform(
+    self.df[TARGET_COLUMN] = (
+        self.label_encoder.fit_transform(
             self.df[TARGET_COLUMN]
         )
+    )
 
     # ======================================================
     # Encode Categorical Features
@@ -54,21 +62,43 @@ class FeatureEngineer:
 
     def encode_features(self):
 
-        logger.info("Encoding categorical features...")
+    logger.info("Encoding categorical features...")
 
-        categorical_columns = self.df.select_dtypes(
+    self.categorical_columns = (
+        self.df.select_dtypes(
             include=["object"]
-        ).columns.tolist()
-
-        if TARGET_COLUMN in categorical_columns:
-
-            categorical_columns.remove(TARGET_COLUMN)
-
-        self.df = pd.get_dummies(
-            self.df,
-            columns=categorical_columns,
-            drop_first=True
         )
+        .columns
+        .tolist()
+    )
+
+    if TARGET_COLUMN in self.categorical_columns:
+
+        self.categorical_columns.remove(
+            TARGET_COLUMN
+        )
+
+    self.df = pd.get_dummies(
+
+        self.df,
+
+        columns=self.categorical_columns,
+
+        drop_first=True
+
+    )
+
+    self.feature_columns = [
+
+        column
+
+        for column in self.df.columns
+
+        if column != TARGET_COLUMN
+
+    ]
+
+    self.numeric_columns = self.feature_columns.copy()
 
     # ======================================================
     # Split Features & Target
@@ -76,13 +106,15 @@ class FeatureEngineer:
 
     def split_features_target(self):
 
-        X = self.df.drop(
-            columns=[TARGET_COLUMN]
-        )
+    X = self.df[
+        self.feature_columns
+    ].copy()
 
-        y = self.df[TARGET_COLUMN]
+    y = self.df[
+        TARGET_COLUMN
+    ].copy()
 
-        return X, y
+    return X, y
 
     # ======================================================
     # Train Test Split
@@ -112,28 +144,47 @@ class FeatureEngineer:
 
     def scale_features(
 
-        self,
+    self,
 
-        X_train,
+    X_train,
 
-        X_test
+    X_test
 
-    ):
+):
 
-        logger.info("Scaling features...")
-        X_train_scaled = pd.DataFrame(
-    self.scaler.fit_transform(X_train),
-    columns=X_train.columns,
-    index=X_train.index,
-)
+    logger.info("Scaling features...")
 
-X_test_scaled = pd.DataFrame(
-    self.scaler.transform(X_test),
-    columns=X_test.columns,
-    index=X_test.index,
-)
+    X_train_scaled = pd.DataFrame(
 
-        return X_train_scaled, X_test_scaled
+        self.scaler.fit_transform(
+            X_train
+        ),
+
+        columns=X_train.columns,
+
+        index=X_train.index
+
+    )
+
+    X_test_scaled = pd.DataFrame(
+
+        self.scaler.transform(
+            X_test
+        ),
+
+        columns=X_test.columns,
+
+        index=X_test.index
+
+    )
+
+    return (
+
+        X_train_scaled,
+
+        X_test_scaled
+
+    )
 
     # ======================================================
     # Complete Pipeline
