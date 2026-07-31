@@ -20,6 +20,14 @@ from src.config import MODEL_PATH
 from src.config import RANDOM_STATE
 from src.logger import get_logger
 from src.utils import save_model
+from joblib import dump
+
+from src.config import (
+    MODEL_PATH,
+    FEATURE_COLUMNS_PATH,
+    SCALER_PATH,
+    LABEL_ENCODER_PATH,
+)
 
 logger = get_logger()
 
@@ -62,10 +70,12 @@ class ModelTrainer:
     # ======================================================
 
     def train(
-        self,
-        X_train,
-        y_train
-    ):
+    self,
+    X_train,
+    y_train,
+    scaler=None,
+    label_encoder=None,
+):
 
         logger.info("=" * 60)
         logger.info("Training Machine Learning Models")
@@ -116,9 +126,40 @@ class ModelTrainer:
         logger.info("=" * 60)
 
         save_model(
-            best_model,
-            MODEL_PATH
-        )
+    best_model,
+    MODEL_PATH
+)
+
+dump(
+    X_train.columns.tolist(),
+    FEATURE_COLUMNS_PATH
+)
+
+logger.info(
+    f"Feature columns saved : {FEATURE_COLUMNS_PATH}"
+)
+
+if scaler is not None:
+
+    dump(
+        scaler,
+        SCALER_PATH
+    )
+
+    logger.info(
+        f"Scaler saved : {SCALER_PATH}"
+    )
+
+if label_encoder is not None:
+
+    dump(
+        label_encoder,
+        LABEL_ENCODER_PATH
+    )
+
+    logger.info(
+        f"Label Encoder saved : {LABEL_ENCODER_PATH}"
+            )
 
         logger.info(
             f"Best model saved to : {MODEL_PATH}"
